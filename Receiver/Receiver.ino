@@ -1,11 +1,11 @@
 #include "ESP32_NOW.h"
 #include <WiFi.h>
 
-#define STEP_PIN 17  // Pin connected to the STEP input on the driver
-#define DIR_PIN 16   // Pin connected to the DIR input on the driver
-#define ENABLE_PIN 21
-#define LED_PIN 2
-
+/* Definitions */
+int LedPin = 2;
+int enablePin = 21;
+int STEP_PIN = 17;
+int DIR_PIN = 16;
 
 typedef struct struct_message {
   int rotations;
@@ -21,28 +21,39 @@ struct_message myData;
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
-  digitalWrite(ENABLE_PIN, LOW);
 
-  digitalWrite(LED_PIN, HIGH);
-  moveStepper(myData.rotations*15);
-  digitalWrite(LED_PIN, LOW);
+  digitalWrite(LedPin, HIGH);
+  runMotor(myData.rotations);
+  digitalWrite(LedPin, LOW);
+}
+
+void runMotor(int steps) {
+  if (steps > 0) {
+    digitalWrite(DIR_PIN, HIGH);
+  } else {
+    digitalWrite(DIR_PIN, LOW);
+    steps = -steps;
+  }
+
+  for (int i = 0; i < steps; i++) {
+    digitalWrite(STEP_PIN, HIGH);  // Pulse the step pin
+    delayMicroseconds(300);        // Wait for 500 microseconds
+    digitalWrite(STEP_PIN, LOW);   // End of pulse
+    delayMicroseconds(300);        // Wait for 500 microseconds
+  }
 }
 
 
-
-
-
-
+/* Main */
 void setup() {
   // Initialize Serial Monitor
-  Serial.begin(9600);
+  Serial.begin(115200);
 
-  pinMode(STEP_PIN, OUTPUT);
-  pinMode(DIR_PIN, OUTPUT);
-  pinMode(ENABLE_PIN, OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LedPin, OUTPUT);
+  pinMode(enablePin, OUTPUT);
+  
+  digitalWrite(enablePin, LOW);
 
-  digitalWrite(ENABLE_PIN, LOW);
   WiFi.mode(WIFI_STA);
 
   // Init ESP-NOW
@@ -53,23 +64,6 @@ void setup() {
   esp_now_register_recv_cb(esp_now_recv_cb_t(OnDataRecv));
 }
 
-
 void loop() {
-}
-
-// Function to move the stepper motor a specified number of steps
-void moveStepper(int steps) {
-  if (steps > 0) {
-    digitalWrite(DIR_PIN, HIGH);
-  } else {
-    digitalWrite(DIR_PIN, LOW);
-    steps = -steps;
-  }
-
-  for (int i = 0; i < steps; i++) {
-    digitalWrite(STEP_PIN, HIGH);  // Pulse the step pin
-    delayMicroseconds(85);        // Wait for 500 microseconds
-    digitalWrite(STEP_PIN, LOW);   // End of pulse
-    delayMicroseconds(85);        // Wait for 500 microseconds
-  }
+  runMotor(100);
 }
