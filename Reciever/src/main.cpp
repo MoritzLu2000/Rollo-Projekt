@@ -41,6 +41,7 @@ void IRAM_ATTR onISR() {
   stepsDone++;
   if (stepsDone >= stepsTarget) {
     stopPeriodic();
+    stepsDone = 0;
   }
 }
 
