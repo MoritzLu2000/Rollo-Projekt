@@ -19,7 +19,7 @@ Später werden in diesem Repository auch die **PCB-Designs** der einzelnen Rollo
 
 ---
 
-## Geplante Erweiterungen
+## Geplante Erweiterungen mit Steppermotoren
 
 - Hochladen der PCB-Layouts für jedes Modul  
 - Integration einer Positionskalibrierung und einen PID Regler mit einenem magnetic rotary encoder
@@ -29,4 +29,18 @@ Später werden in diesem Repository auch die **PCB-Designs** der einzelnen Rollo
 
 ---
 
+## Geplante komplett kabellose Rollomodule – 5-V-Version
 
+Dieses Projekt basiert auf dem gleichen Prinzip wie das ursprüngliche **Wireless-Rollomodule**-Projekt, zielt jedoch auf eine vollständig **kabellose Version** ab.
+
+Jedes Modul nutzt einen **5-V-Schrittmotor** und wird von einem **ESP32** gesteuert.  
+Die Energieversorgung erfolgt über einen **Li-Akku**, der über **USB-C** wieder aufgeladen werden kann.  
+Damit wird kein festes Stromkabel mehr benötigt. Jedes Rollo arbeitet also autark.
+
+**Eigenschaften der 5-V-Version:**
+
+- 100 % kabelloser Betrieb  
+- Kompakte Einheit mit Akku, Ladeelektronik, Motor und Steuerung  
+- Aufladung über USB-C  
+- Kommunikation per Funkfernbedienung (ESP32-basiert)  
+- Gleiche Softwarebasis wie das ursprüngliche, kabelgebundene System
